@@ -78,16 +78,17 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="border-b border-border bg-card shadow-sm">
-        <div className="container mx-auto px-6 py-6">
+        <div className="container mx-auto px-3 py-3">
           <div className="flex items-center gap-3">
-            <span className="text-4xl">🍪</span>
+            {/* <span className="text-4xl">🍪</span> */}
             <div>
               <h1 className="text-2xl font-bold text-foreground">
-                Cookie-Lick Detector
+                {/* Open-Cookie */}
+                <img src="./public/logo.png" alt="" className="w-7/12 cursor-pointer"/>
               </h1>
-              <p className="text-sm text-muted-foreground">
+              {/* <p className="text-sm text-muted-foreground">
                 Open Source Issue Health Monitor
-              </p>
+              </p> */}
             </div>
           </div>
         </div>
