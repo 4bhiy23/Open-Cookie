@@ -2,10 +2,13 @@ import { cn } from "@/lib/utils";
 
 export const StatusBadge = ({ status, children, className }) => {
   const statusStyles = {
-    active: "bg-status-active-bg text-status-active border-status-active/20",
-    dormant: "bg-status-dormant-bg text-status-dormant border-status-dormant/20",
-    stale: "bg-status-stale-bg text-status-stale border-status-stale/20",
-    neutral: "bg-status-neutral-bg text-status-neutral border-status-neutral/20",
+    active: "bg-green-100 text-green-800 border-green-200",
+    'at-risk': "bg-yellow-100 text-yellow-800 border-yellow-200",
+    dormant: "bg-orange-100 text-orange-800 border-orange-200",
+    inactive: "bg-red-100 text-red-800 border-red-200",
+    unassigned: "bg-gray-100 text-gray-800 border-gray-200",
+    error: "bg-red-100 text-red-800 border-red-200",
+    neutral: "bg-gray-100 text-gray-800 border-gray-200",
   };
 
   return (

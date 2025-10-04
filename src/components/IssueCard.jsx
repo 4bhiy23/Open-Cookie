@@ -11,6 +11,7 @@ export const IssueCard = ({
   lastActivity,
   status,
   url,
+  assigneeActivity,
 }) => {
   const handleNudge = () => {
     toast.success(`Nudge sent to ${claimedBy}`, {
@@ -48,8 +49,19 @@ export const IssueCard = ({
         </StatusBadge>
       </div>
 
-      <div className="mb-3">
+      <div className="mb-3 space-y-1">
         <p className="text-xs text-muted-foreground">Last activity: {lastActivity}</p>
+        {assigneeActivity && (
+          <div className="text-xs text-muted-foreground">
+            <p className="font-medium">{assigneeActivity.activityLevel}</p>
+            {assigneeActivity.activity && (
+              <div className="flex gap-3 mt-1">
+                <span>7d: {assigneeActivity.activity.last_7_days.score} pts</span>
+                <span>30d: {assigneeActivity.activity.last_30_days.score} pts</span>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       <div className="flex gap-2">
