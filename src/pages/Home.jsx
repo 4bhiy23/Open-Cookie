@@ -2,10 +2,10 @@ import { useState, useEffect } from "react";
 import { motion, useAnimation } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function OpenCookieLanding() {
-  const [showModal, setShowModal] = useState(false);
-  const [modalType, setModalType] = useState("signup");
+  const { login, isAuthenticated } = useAuth();
   const [repoUrl, setRepoUrl] = useState("");
   const [scanResult, setScanResult] = useState("");
   const [cookies, setCookies] = useState([]);
@@ -114,25 +114,24 @@ export default function OpenCookieLanding() {
           </div>
         </div>
         <div className="flex gap-2">
-          <Button
-            variant="outline"
-            className="border-[#5a1c1c] text-[#5a1c1c] hover:bg-[#5a1c1c10]"
-            onClick={() => {
-              setModalType("login");
-              setShowModal(true);
-            }}
-          >
-            Log in
-          </Button>
-          <Button
-            className="bg-[#5a1c1c] hover:bg-[#7b2929] text-white"
-            onClick={() => {
-              setModalType("signup");
-              setShowModal(true);
-            }}
-          >
-            Sign up
-          </Button>
+          {isAuthenticated ? (
+            <Button
+              className="bg-[#5a1c1c] hover:bg-[#7b2929] text-white"
+              onClick={() => window.location.href = '/dashboard'}
+            >
+              Go to Dashboard
+            </Button>
+          ) : (
+            <Button
+              className="bg-[#5a1c1c] hover:bg-[#7b2929] text-white"
+              onClick={login}
+            >
+              <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 0C4.477 0 0 4.484 0 10.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0110 4.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.203 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.942.359.31.678.921.678 1.856 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0020 10.017C20 4.484 15.522 0 10 0z" clipRule="evenodd" />
+              </svg>
+              Connect GitHub Account
+            </Button>
+          )}
         </div>
       </header>
 
@@ -147,9 +146,24 @@ export default function OpenCookieLanding() {
             (or something) consumed cookies they shouldn't.
           </p>
           <div className="flex gap-4 mb-4">
-            <Button className="bg-[#5a1c1c] hover:bg-[#7b2929] text-white">
-              Get Started — It's Free
-            </Button>
+            {isAuthenticated ? (
+              <Button 
+                className="bg-[#5a1c1c] hover:bg-[#7b2929] text-white"
+                onClick={() => window.location.href = '/dashboard'}
+              >
+                Go to Dashboard
+              </Button>
+            ) : (
+              <Button 
+                className="bg-[#5a1c1c] hover:bg-[#7b2929] text-white"
+                onClick={login}
+              >
+                <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 0C4.477 0 0 4.484 0 10.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0110 4.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.203 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.942.359.31.678.921.678 1.856 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0020 10.017C20 4.484 15.522 0 10 0z" clipRule="evenodd" />
+                </svg>
+                Connect GitHub Account
+              </Button>
+            )}
             <Button
               variant="outline"
               className="border-[#5a1c1c] text-[#5a1c1c] hover:bg-[#5a1c1c10]"
@@ -228,64 +242,6 @@ export default function OpenCookieLanding() {
       <footer className="relative z-10 p-6 text-center text-sm text-[#5a1c1c99]">
         Built for the hackathon • Open-Cookie © {new Date().getFullYear()}
       </footer>
-
-      {/* Auth Modal */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
-          <Card className="max-w-sm w-full bg-white p-6 rounded-xl relative">
-            <button
-              onClick={() => setShowModal(false)}
-              className="absolute top-3 right-3 text-xl text-[#5a1c1c]"
-            >
-              ✕
-            </button>
-            <h3 className="text-2xl font-bold mb-4 text-[#5a1c1c]">
-              {modalType === "login" ? "Log in" : "Sign up"}
-            </h3>
-            <div className="flex flex-col gap-3">
-              {modalType === "signup" && (
-                <input
-                  type="text"
-                  placeholder="Full name"
-                  className="border border-[#5a1c1c20] rounded-lg px-3 py-2"
-                />
-              )}
-              <input
-                type="email"
-                placeholder="Email"
-                className="border border-[#5a1c1c20] rounded-lg px-3 py-2"
-              />
-              <input
-                type="password"
-                placeholder="Password"
-                className="border border-[#5a1c1c20] rounded-lg px-3 py-2"
-              />
-              <div className="flex justify-end gap-2 mt-4">
-                <Button
-                  variant="outline"
-                  className="border-[#5a1c1c] text-[#5a1c1c] hover:bg-[#5a1c1c10]"
-                  onClick={() => setShowModal(false)}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  className="bg-[#5a1c1c] hover:bg-[#7b2929] text-white"
-                  onClick={() => {
-                    alert(
-                      `${
-                        modalType === "login" ? "Login" : "Signup"
-                      } submitted (demo).`
-                    );
-                    setShowModal(false);
-                  }}
-                >
-                  Continue
-                </Button>
-              </div>
-            </div>
-          </Card>
-        </div>
-      )}
     </div>
   );
 }
