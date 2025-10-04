@@ -1,6 +1,10 @@
 import express from "express";
 import axios from "axios";
 import cors from "cors";
+import dotenv from "dotenv";
+
+// Load environment variables
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -16,6 +20,15 @@ app.get("/", (req, res) => {
 });
 
 const token = process.env.GITHUB_TOKEN || "your_github_token_here";
+
+// Validate GitHub token
+if (!process.env.GITHUB_TOKEN || process.env.GITHUB_TOKEN === "your_github_token_here") {
+  console.error("❌ GITHUB_TOKEN environment variable is not set!");
+  console.error("Please create a .env file with your GitHub Personal Access Token:");
+  console.error("GITHUB_TOKEN=your_actual_token_here");
+  console.error("Get your token from: https://github.com/settings/tokens");
+  console.error("Required scopes: repo (for private repos) or public_repo (for public repos only)");
+}
 
 /**
  * Analyze assignee activity over the last 30 days
