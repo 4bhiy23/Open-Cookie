@@ -1,14 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Clock, AlertCircle, CheckCircle, UserX } from "lucide-react";
 
-interface Activity {
-  id: string;
-  type: "nudge" | "claim" | "release" | "stale";
-  message: string;
-  timestamp: string;
-}
-
-const mockActivities: Activity[] = [
+const mockActivities = [
   {
     id: "1",
     type: "nudge",
@@ -35,7 +28,7 @@ const mockActivities: Activity[] = [
   },
 ];
 
-const getIcon = (type: Activity["type"]) => {
+const getIcon = (type) => {
   switch (type) {
     case "nudge":
       return <Clock className="h-4 w-4 text-status-dormant" />;

@@ -4,15 +4,6 @@ import { StatusBadge } from "./StatusBadge";
 import { ExternalLink, Bell, Unlock } from "lucide-react";
 import { toast } from "sonner";
 
-interface IssueCardProps {
-  title: string;
-  issueNumber: number;
-  claimedBy: string;
-  lastActivity: string;
-  status: "active" | "dormant" | "stale";
-  url: string;
-}
-
 export const IssueCard = ({
   title,
   issueNumber,
@@ -20,7 +11,7 @@ export const IssueCard = ({
   lastActivity,
   status,
   url,
-}: IssueCardProps) => {
+}) => {
   const handleNudge = () => {
     toast.success(`Nudge sent to ${claimedBy}`, {
       description: `Reminder sent for issue #${issueNumber}`,

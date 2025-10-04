@@ -1,12 +1,6 @@
 import { cn } from "@/lib/utils";
 
-interface StatusBadgeProps {
-  status: "active" | "dormant" | "stale" | "neutral";
-  children: React.ReactNode;
-  className?: string;
-}
-
-export const StatusBadge = ({ status, children, className }: StatusBadgeProps) => {
+export const StatusBadge = ({ status, children, className }) => {
   const statusStyles = {
     active: "bg-status-active-bg text-status-active border-status-active/20",
     dormant: "bg-status-dormant-bg text-status-dormant border-status-dormant/20",

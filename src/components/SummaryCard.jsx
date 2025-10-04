@@ -1,15 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { StatusBadge } from "./StatusBadge";
-import { LucideIcon } from "lucide-react";
 
-interface SummaryCardProps {
-  title: string;
-  value: number;
-  status: "active" | "dormant" | "stale" | "neutral";
-  icon: LucideIcon;
-}
-
-export const SummaryCard = ({ title, value, status, icon: Icon }: SummaryCardProps) => {
+export const SummaryCard = ({ title, value, status, icon: Icon }) => {
   return (
     <Card className="p-6 hover:shadow-lg transition-shadow">
       <div className="flex items-start justify-between">
