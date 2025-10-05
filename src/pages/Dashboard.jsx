@@ -40,7 +40,7 @@ const Dashboard = () => {
 
   const fetchRepos = async () => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://10.7.23.153:3000'}/api/user/repos`, {
+      const response = await fetch(`https://open-cookie.onrender.com/api/user/repos`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'token': token

@@ -13,8 +13,8 @@ const DEFAULT_REPO = "react";
 // Function to fetch issues from API
 const fetchIssues = async (owner, repo, page = 1, fetchAll = false) => {
   const endpoint = fetchAll 
-    ? `http://localhost:3000/api/issues/${owner}/${repo}/all`
-    : `http://localhost:3000/api/issues/${owner}/${repo}?page=${page}`;
+    ? `https://open-cookie.onrender.com/api/issues/${owner}/${repo}/all`
+    : `https://open-cookie.onrender.com/api/issues/${owner}/${repo}?page=${page}`;
   
   const response = await fetch(endpoint);
   if (!response.ok) {
