@@ -66,7 +66,7 @@ app.get("/auth/github/callback", async (req, res) => {
     const user = userResponse.data;
 
     // Redirect to frontend with token
-    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:8080';
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:8080/';
     res.redirect(`${frontendUrl}/dashboard?token=${access_token}&user=${encodeURIComponent(JSON.stringify(user))}`);
     
   } catch (error) {
@@ -764,7 +764,7 @@ process.on('unhandledRejection', (reason, promise) => {
   process.exit(1);
 });
 
-app.listen(PORT, () => {
-  console.log(`✅ Server running on http://localhost:${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`✅ Server running on http://0.0.0.0:${PORT}`);
   console.log(`🔍 Activity tracking system ready`);
 });

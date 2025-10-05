@@ -38,7 +38,7 @@ const RepoDetails = () => {
     try {
       setLoading(true);
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api/issues/${owner}/${repo}`,
+        `${import.meta.env.VITE_API_URL || 'http://10.7.23.153:3000'}/api/issues/${owner}/${repo}`,
         {
           headers: {
             'Authorization': `Bearer ${token}`,

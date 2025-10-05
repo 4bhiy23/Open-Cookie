@@ -48,7 +48,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = () => {
     // Redirect to GitHub OAuth
-    window.location.href = `${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/auth/github`;
+    window.location.href = `${import.meta.env.VITE_API_URL || 'http://10.7.23.153:3000'}/auth/github`;
   };
 
   const logout = () => {
