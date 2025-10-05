@@ -1,6 +1,10 @@
 import express from "express";
 import axios from "axios";
 import cors from "cors";
+import dotenv from "dotenv";
+
+// Load environment variables
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -15,7 +19,163 @@ app.get("/", (req, res) => {
   res.send("Open-Cookie Activity Tracker Backend is running 🚀");
 });
 
+/**
+ * GitHub OAuth endpoints
+ */
+app.get("/auth/github", (req, res) => {
+  const redirectUri = `${req.protocol}://${req.get('host')}/auth/github/callback`;
+  const scope = 'user:email,repo';
+  const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scope}`;
+  
+  res.redirect(githubAuthUrl);
+});
+
+app.get("/auth/github/callback", async (req, res) => {
+  const { code } = req.query;
+  
+  if (!code) {
+    return res.status(400).json({ error: "Authorization code not provided" });
+  }
+
+  try {
+    // Exchange code for access token
+    const tokenResponse = await axios.post('https://github.com/login/oauth/access_token', {
+      client_id: GITHUB_CLIENT_ID,
+      client_secret: GITHUB_CLIENT_SECRET,
+      code: code
+    }, {
+      headers: {
+        'Accept': 'application/json'
+      }
+    });
+
+    const { access_token } = tokenResponse.data;
+
+    if (!access_token) {
+      return res.status(400).json({ error: "Failed to get access token" });
+    }
+
+    // Get user info
+    const userResponse = await axios.get('https://api.github.com/user', {
+      headers: {
+        'Authorization': `token ${access_token}`,
+        'Accept': 'application/vnd.github.v3+json'
+      }
+    });
+
+    const user = userResponse.data;
+
+    // Redirect to frontend with token
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:8080/';
+    res.redirect(`${frontendUrl}/dashboard?token=${access_token}&user=${encodeURIComponent(JSON.stringify(user))}`);
+    
+  } catch (error) {
+    console.error('GitHub OAuth error:', error.message);
+    res.status(500).json({ error: "Authentication failed" });
+  }
+});
+
+/**
+ * Get user repositories
+ */
+app.get("/api/user/repos", async (req, res) => {
+  const { token: userToken } = req.headers;
+  
+  if (!userToken) {
+    return res.status(401).json({ error: "Access token required" });
+  }
+
+  try {
+    const response = await axios.get('https://api.github.com/user/repos', {
+      headers: {
+        'Authorization': `token ${userToken}`,
+        'Accept': 'application/vnd.github.v3+json'
+      },
+      params: {
+        sort: 'updated',
+        per_page: 100
+      }
+    });
+
+    const repos = response.data.map(repo => ({
+      id: repo.id,
+      name: repo.name,
+      full_name: repo.full_name,
+      description: repo.description,
+      private: repo.private,
+      html_url: repo.html_url,
+      updated_at: repo.updated_at,
+      language: repo.language,
+      stargazers_count: repo.stargazers_count,
+      forks_count: repo.forks_count,
+      open_issues_count: repo.open_issues_count
+    }));
+
+    res.json({ repos });
+  } catch (error) {
+    console.error('Error fetching user repos:', error.message);
+    res.status(500).json({ error: "Failed to fetch repositories" });
+  }
+});
+
+/**
+ * Get user info
+ */
+app.get("/api/user", async (req, res) => {
+  const { token: userToken } = req.headers;
+  
+  if (!userToken) {
+    return res.status(401).json({ error: "Access token required" });
+  }
+
+  try {
+    const response = await axios.get('https://api.github.com/user', {
+      headers: {
+        'Authorization': `token ${userToken}`,
+        'Accept': 'application/vnd.github.v3+json'
+      }
+    });
+
+    const user = {
+      id: response.data.id,
+      login: response.data.login,
+      name: response.data.name,
+      email: response.data.email,
+      avatar_url: response.data.avatar_url,
+      html_url: response.data.html_url,
+      public_repos: response.data.public_repos,
+      followers: response.data.followers,
+      following: response.data.following
+    };
+
+    res.json({ user });
+  } catch (error) {
+    console.error('Error fetching user info:', error.message);
+    res.status(500).json({ error: "Failed to fetch user information" });
+  }
+});
+
 const token = process.env.GITHUB_TOKEN || "your_github_token_here";
+const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID;
+const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
+
+// Validate GitHub token
+if (!process.env.GITHUB_TOKEN || process.env.GITHUB_TOKEN === "your_github_token_here") {
+  console.error("❌ GITHUB_TOKEN environment variable is not set!");
+  console.error("Please create a .env file with your GitHub Personal Access Token:");
+  console.error("GITHUB_TOKEN=your_actual_token_here");
+  console.error("Get your token from: https://github.com/settings/tokens");
+  console.error("Required scopes: repo (for private repos) or public_repo (for public repos only)");
+}
+
+// Validate GitHub OAuth credentials
+if (!GITHUB_CLIENT_ID || !GITHUB_CLIENT_SECRET) {
+  console.error("❌ GitHub OAuth credentials not set!");
+  console.error("Please add to your .env file:");
+  console.error("GITHUB_CLIENT_ID=your_client_id");
+  console.error("GITHUB_CLIENT_SECRET=your_client_secret");
+  console.error("Get these from: https://github.com/settings/applications/new");
+}
 
 /**
  * Analyze assignee activity over the last 30 days
@@ -604,7 +764,7 @@ process.on('unhandledRejection', (reason, promise) => {
   process.exit(1);
 });
 
-app.listen(PORT, () => {
-  console.log(`✅ Server running on http://localhost:${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`✅ Server running on http://0.0.0.0:${PORT}`);
   console.log(`🔍 Activity tracking system ready`);
 });
