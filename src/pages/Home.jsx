@@ -194,6 +194,7 @@ export default function OpenCookieLanding() {
                   onChange={(e) => setRepoUrl(e.target.value)}
                   placeholder="https://github.com/your/repo"
                   className="flex-1 border border-[#5a1c1c20] rounded-lg px-3 py-2 focus:outline-none"
+                  disabled={true}
                 />
                 <Button
                   className="bg-[#5a1c1c] hover:bg-[#7b2929] text-white"

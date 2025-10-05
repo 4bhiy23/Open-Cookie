@@ -67,7 +67,7 @@ app.get("/auth/github/callback", async (req, res) => {
 
     // Redirect to frontend with token
     const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:8080/';
-    res.redirect(`${frontendUrl}/dashboard?token=${access_token}&user=${encodeURIComponent(JSON.stringify(user))}`);
+    res.redirect(`${frontendUrl}dashboard?token=${access_token}&user=${encodeURIComponent(JSON.stringify(user))}`);
     
   } catch (error) {
     console.error('GitHub OAuth error:', error.message);
